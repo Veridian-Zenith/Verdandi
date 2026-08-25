@@ -11,9 +11,11 @@ if(VERDANDI_VARIANT STREQUAL "host")
     # Reset inherited shell flags here, then pin host-native ones. Env vars
     # (CFLAGS/CXXFLAGS/CPPFLAGS/LDFLAGS) are deliberately ignored everywhere
     # in this repo; each build entry point re-pins what it needs.
+    # VERDANDI_SANITIZERS lets CI add e.g. -fsanitize=address,undefined.
+    set(VERDANDI_SANITIZERS "" CACHE STRING "host-only sanitizer flags")
     set(CMAKE_C_FLAGS "" CACHE STRING "" FORCE)
-    set(CMAKE_CXX_FLAGS "-march=native -mtune=native" CACHE STRING "" FORCE)
-    set(CMAKE_EXE_LINKER_FLAGS "-fuse-ld=lld" CACHE STRING "" FORCE)
+    set(CMAKE_CXX_FLAGS "-march=native -mtune=native ${VERDANDI_SANITIZERS}" CACHE STRING "" FORCE)
+    set(CMAKE_EXE_LINKER_FLAGS "-fuse-ld=lld ${VERDANDI_SANITIZERS}" CACHE STRING "" FORCE)
 endif()
 
 set(CMAKE_CXX_STANDARD 26)

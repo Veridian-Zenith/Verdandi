@@ -36,3 +36,18 @@ All work happens in QEMU until M5.
 Stretch (post-M8): ext-family or tarfs, xHCI storage, Voix as userspace policy
 compiler emitting kernel policy blobs, SMP scheduler experiments for hybrid
 topology (the scx_lavd knowledge, reimplemented from scratch).
+
+## Tooling backlog
+
+Running today (GitHub Actions):
+- ci.yml: kernel build + QEMU boot smoke, host tests, ASan+UBSan pass,
+  clang-format gate
+- codeql.yml: weekly + per-push C++ analysis over both build targets
+
+Queued, in the order they earn their keep:
+- libFuzzer target for policy::allows / future rule parser (host-only; pairs
+  with SECURITY scope) - add once the evaluator grows beyond a bitmask
+- clang-tidy gate on policy/ and libvz/ only - kernel code gets too noisy too early
+- coverage report for host tests (llvm-cov), surfaced as a badge
+- kernel-side hardening checks once M3 lands: guard pages for kmalloc,
+  poison-on-free, then a KASAN-style shadow when paging is ours to control

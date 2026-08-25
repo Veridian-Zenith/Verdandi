@@ -1,0 +1,54 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install llvm toolchain
+        run: |
+          wget -q https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 21
+          sudo apt-get update -q
+          sudo apt-get install -y ninja-build lld qemu-system-x86
+          echo "/usr/lib/llvm-21/bin" >> "$GITHUB_PATH"
+
+      - name: kernel build + boot smoke
+        run: |
+          cmake --preset kernel
+          cmake --build --preset kernel
+          set +e
+          timeout 10 qemu-system-x86_64 -m 256M \
+            -kernel build/kernel/verdandi.elf \
+            -serial stdio -display none -no-reboot > boot.log 2>&1
+          grep -q "phase 0 alive" boot.log || { cat boot.log; exit 1; }
+          echo "boot banner OK"
+
+      - name: host tests
+        run: |
+          cmake --preset host
+          cmake --build --preset host
+          ctest --preset host
+
+      - name: host tests under ASan+UBSan
+        run: |
+          cmake --preset host -DVERDANDI_SANITIZERS="-fsanitize=address,undefined -fno-sanitize-recover=all"
+          cmake --build --preset host
+          ctest --preset host
+
+  format:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: clang-format check
+        run: |
+          wget -q https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && sudo ./llvm.sh 21
+          echo "/usr/lib/llvm-21/bin" >> "$GITHUB_PATH"
+          clang-format --dry-run -Werror $(git ls-files '*.cpp' '*.hpp' '*.h')

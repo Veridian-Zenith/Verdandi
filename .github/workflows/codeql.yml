@@ -1,0 +1,40 @@
+name: codeql
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: '0 6 * * 1'   # weekly, Monday mornings
+
+jobs:
+  analyze:
+    runs-on: ubuntu-24.04
+    permissions:
+      security-events: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install llvm toolchain
+        run: |
+          wget -q https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 21
+          sudo apt-get update -q
+          sudo apt-get install -y ninja-build lld
+          echo "/usr/lib/llvm-21/bin" >> "$GITHUB_PATH"
+
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: cpp
+          build-mode: manual
+
+      - name: build (intercepted by codeql)
+        run: |
+          cmake --preset kernel && cmake --build --preset kernel
+          cmake --preset host && cmake --build --preset host
+
+      - uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:cpp"
