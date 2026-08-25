@@ -13,22 +13,25 @@ uint8_t SerialPort::inb(uint16_t off) const {
 }
 
 void SerialPort::init() {
-    outb(1, 0x00);   // IER: no interrupts yet
-    outb(3, 0x80);   // LCR: DLAB on
-    outb(0, 0x01);   // divisor low: 1 -> 115200 baud
-    outb(1, 0x00);   // divisor high
-    outb(3, 0x03);   // LCR: 8N1, DLAB off
-    outb(2, 0xC7);   // FCR: FIFO on, clear both
-    outb(4, 0x0B);   // MCR: DTR+RTS+OUT2
+    outb(1, 0x00); // IER: no interrupts yet
+    outb(3, 0x80); // LCR: DLAB on
+    outb(0, 0x01); // divisor low: 1 -> 115200 baud
+    outb(1, 0x00); // divisor high
+    outb(3, 0x03); // LCR: 8N1, DLAB off
+    outb(2, 0xC7); // FCR: FIFO on, clear both
+    outb(4, 0x0B); // MCR: DTR+RTS+OUT2
 }
 
 void SerialPort::putc(char c) {
-    while (!(inb(5) & 0x20)) {}   // LSR bit5: THR empty
+    while (!(inb(5) & 0x20)) {
+    } // LSR bit5: THR empty
     outb(0, static_cast<uint8_t>(c));
 }
 
 void SerialPort::write(const char* s) {
-    while (*s) putc(*s++);
+    while (*s) {
+        putc(*s++);
+    }
 }
 
 } // namespace arch

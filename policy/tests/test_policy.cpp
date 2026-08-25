@@ -1,14 +1,17 @@
+#include "policy/capability.hpp"
 #include <cassert>
 #include <cstdio>
-#include "policy/capability.hpp"
 
 using namespace policy;
 
 static int failures = 0;
-#define CHECK(cond)                                                     \
-    do { if (!(cond)) { ++failures;                                     \
-        std::printf("FAIL %s:%d: %s\n", __FILE__, __LINE__, #cond); } } \
-    while (0)
+#define CHECK(cond)                                                                                \
+    do {                                                                                           \
+        if (!(cond)) {                                                                             \
+            ++failures;                                                                            \
+            std::printf("FAIL %s:%d: %s\n", __FILE__, __LINE__, #cond);                            \
+        }                                                                                          \
+    } while (0)
 
 int main() {
     auto s = CapabilitySet::none();
@@ -25,7 +28,10 @@ int main() {
     CHECK(allows(Op::GenerateCode, jit));
     CHECK(!allows(Op::OpenDevice, jit));
 
-    if (failures == 0) { std::printf("policy tests: all pass\n"); return 0; }
+    if (failures == 0) {
+        std::printf("policy tests: all pass\n");
+        return 0;
+    }
     std::printf("policy tests: %d failure(s)\n", failures);
     return 1;
 }
