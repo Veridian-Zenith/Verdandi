@@ -6,9 +6,11 @@ All work happens in QEMU until M5.
 - [x] M0 Skeleton builds
       Gate: `cmake --preset kernel && cmake --build --preset kernel` produces
       build/kernel/verdandi.elf; `tools/run-qemu.sh` prints the banner on COM1.
-- [ ] M1 CPU alive
+- [x] M1 CPU alive
       GDT, IDT, ISRs with full register dump on fault, PIC->APIC timer tick,
-      serial console driver. Gate: divide-by-zero handler prints regs and recovers.
+      serial console driver. Gate: divide-by-zero handler prints regs and
+      recovers. Also landed: 32->64 bit long-mode trampoline (kernel now
+      runs in long mode; QEMU boots via ELF32-converted boot image).
 - [ ] M2 Physical memory
       Multiboot2 memory map -> frame allocator (bitmap or buddy). Gate: alloc /
       free 10k frames under stress test without leak or double-free.

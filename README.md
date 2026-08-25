@@ -19,7 +19,9 @@ tools/run-qemu.sh
 You should see:
 
 ```
-[verdandi] phase 0 alive: protected mode, COM1 up
+[verdandi] phase 2 alive: long mode, COM1 up
+[verdandi] lapic timer: 10 ticks observed
+[verdandi] recovered from #DE: M1 gate passed
 ```
 
 ## How it is organized

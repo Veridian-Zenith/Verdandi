@@ -1,16 +1,14 @@
 #include "arch/x86_64/serial.hpp"
 
+#include "arch/x86_64/io.hpp"
+
 namespace arch {
 
 void SerialPort::outb(uint16_t off, uint8_t v) const {
-    asm volatile("outb %0, %1" : : "a"(v), "Nd"(static_cast<uint16_t>(base_ + off)));
+    out8(static_cast<uint16_t>(base_ + off), v);
 }
 
-uint8_t SerialPort::inb(uint16_t off) const {
-    uint8_t v;
-    asm volatile("inb %1, %0" : "=a"(v) : "Nd"(static_cast<uint16_t>(base_ + off)));
-    return v;
-}
+uint8_t SerialPort::inb(uint16_t off) const { return in8(static_cast<uint16_t>(base_ + off)); }
 
 void SerialPort::init() {
     outb(1, 0x00); // IER: no interrupts yet

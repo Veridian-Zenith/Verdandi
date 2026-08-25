@@ -3,10 +3,10 @@
   "configurePresets": [
     {
       "name": "kernel",
-      "displayName": "verdandi.elf (i386 freestanding, clang)",
+      "displayName": "verdandi.elf (x86_64 freestanding, clang)",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/kernel",
-      "toolchainFile": "${sourceDir}/cmake/i686-kernel-toolchain.cmake",
+      "toolchainFile": "${sourceDir}/cmake/x86_64-kernel-toolchain.cmake",
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "VERDANDI_VARIANT": "kernel",
