@@ -1,0 +1,6 @@
+/build/
+.cache/
+compile_commands.json
+
+# local agent/working docs - not part of the published tree
+/AGENTS.md

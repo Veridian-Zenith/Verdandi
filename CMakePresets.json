@@ -1,0 +1,41 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "kernel",
+      "displayName": "verdandi.elf (i386 freestanding, clang)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/kernel",
+      "toolchainFile": "${sourceDir}/cmake/i686-kernel-toolchain.cmake",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "VERDANDI_VARIANT": "kernel",
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "host",
+      "displayName": "host unit tests (policy, libvz)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/host",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "VERDANDI_VARIANT": "host",
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_CXX_COMPILER": "clang++",
+        "CMAKE_C_COMPILER": "clang"
+      }
+    }
+  ],
+  "buildPresets": [
+    { "name": "kernel", "configurePreset": "kernel", "jobs": 8 },
+    { "name": "host", "configurePreset": "host", "jobs": 8 }
+  ],
+  "testPresets": [
+    {
+      "name": "host",
+      "configurePreset": "host",
+      "output": { "outputOnFailure": true }
+    }
+  ]
+}
